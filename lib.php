@@ -146,6 +146,16 @@ class enrol_elis_plugin extends enrol_plugin {
         $enrol = $DB->get_record('enrol', array('courseid'=>$course->id, 'enrol'=>'elis'));
         return $enrol;
     }
+
+    /**
+     * Is it possible to hide/show enrol instance via standard UI?
+     *
+     * @param stdClass $instance
+     * @return bool
+     */
+    public function can_hide_show_instance($instance) {
+        return true;
+    }
 }
 
 /**
