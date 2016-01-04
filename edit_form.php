@@ -1,7 +1,7 @@
 <?php
 /**
  * ELIS(TM): Enterprise Learning Intelligence Suite
- * Copyright (C) 2008-2011 Remote-Learner.net Inc (http://www.remote-learner.net)
+ * Copyright (C) 2008-2016 Remote-Learner.net Inc (http://www.remote-learner.net)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    elis
- * @subpackage programmanagement
- * @author     Remote-Learner.net Inc
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL
- * @copyright  (C) 2008-2012 Remote Learner.net Inc http://www.remote-learner.net
+ * @package    enrol_elis
+ * @author     Remote-Learner.net Inc.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  (C) 2008-2016 Remote Learner.net Inc (http://www.remote-learner.net)
  *
  */
 
@@ -39,6 +38,8 @@ class enrol_elis_edit_form extends moodleform {
 
         $mform->addElement('advcheckbox', enrol_elis_plugin::ENROL_FROM_COURSE_CATALOG_DB, get_string(enrol_elis_plugin::ENROL_FROM_COURSE_CATALOG_CONFIG, 'enrol_elis'));
         $mform->setDefault(enrol_elis_plugin::ENROL_FROM_COURSE_CATALOG_DB, $plugin->get_config(enrol_elis_plugin::ENROL_FROM_COURSE_CATALOG_CONFIG));
+        $mform->addElement('advcheckbox', enrol_elis_plugin::UNENROL_FROM_COURSE_CATALOG_DB, get_string(enrol_elis_plugin::UNENROL_FROM_COURSE_CATALOG_CONFIG, 'enrol_elis'));
+        $mform->setDefault(enrol_elis_plugin::UNENROL_FROM_COURSE_CATALOG_DB, $plugin->get_config(enrol_elis_plugin::UNENROL_FROM_COURSE_CATALOG_CONFIG));
 
         if ($instance->id) {
             $roles = get_default_enrol_roles($context, $instance->roleid);
