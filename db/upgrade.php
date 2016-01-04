@@ -19,16 +19,27 @@
  * @package    enrol_elis
  * @author     Remote-Learner.net Inc
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @copyright  (C) 2008-2016 Remote Learner.net Inc (http://www.remote-learner.net)
+ * @copyright  (C) 2008-2016 Remote-Learner.net Inc (http://www.remote-learner.net)
+ * @author     Brent Boghosian <brent.boghosian@remote-learner.net>
  *
  */
 
-$string['enrol_from_course_catalog'] = 'Allow enrolments from ELIS Widgets';
-$string['enrol_from_course_catalog_desc'] = 'If this is enabled, users will be allowed to self-enrol via the ELIS Enrolment Widgets.';
-$string['missing_elisprogram_dependency'] = 'Missing dependency: ELIS program';
-$string['pluginname'] = 'ELIS Program Manager enrolments';
+defined('MOODLE_INTERNAL') || die();
 
-$string['elis:config'] = 'Configure ELIS PM enrolment instances';
-$string['elis:unenrol'] = 'Unenrol users who were enrolled via the ELIS PM class instance';
-$string['unenrol_from_course_catalog'] = 'Allow unenrolments from ELIS Widgets';
-$string['unenrol_from_course_catalog_desc'] = 'If this is enabled, users will be allowed to self-unenrol via the ELIS Enrolment Widgets, but only if they have no grade data in the class.';
+function xmldb_enrol_elis_upgrade($oldversion = 0) {
+    global $DB, $CFG;
+
+    $dbman = $DB->get_manager();
+    $result = true;
+
+    if ($result && $oldversion < 2014082502) {
+        // Must update all enrol_elis instances with new customint2, if set.
+        if (get_config('enrol_elis', 'unenrol_from_course_catalog') == '1') {
+            $sql = 'UPDATE {enrol} SET customint2 = 1 WHERE enrol = "elis"';
+            $DB->execute($sql);
+        }
+        upgrade_plugin_savepoint($result, '2014082502', 'enrol', 'elis');
+    }
+
+    return $result;
+}
