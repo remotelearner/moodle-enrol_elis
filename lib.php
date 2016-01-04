@@ -1,7 +1,7 @@
 <?php
 /**
  * ELIS(TM): Enterprise Learning Intelligence Suite
- * Copyright (C) 2008-2011 Remote-Learner.net Inc (http://www.remote-learner.net)
+ * Copyright (C) 2008-2016 Remote-Learner.net Inc (http://www.remote-learner.net)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package    elis
- * @subpackage programmanagement
+ * @package    enrol_elis
  * @author     Remote-Learner.net Inc
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL
- * @copyright  (C) 2008-2012 Remote Learner.net Inc http://www.remote-learner.net
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  (C) 2008-2016 Remote Learner.net Inc (http://www.remote-learner.net)
  *
  */
 
@@ -29,6 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 class enrol_elis_plugin extends enrol_plugin {
     const ENROL_FROM_COURSE_CATALOG_CONFIG = 'enrol_from_course_catalog';
     const ENROL_FROM_COURSE_CATALOG_DB = 'customint1';
+    const UNENROL_FROM_COURSE_CATALOG_CONFIG = 'unenrol_from_course_catalog';
+    const UNENROL_FROM_COURSE_CATALOG_DB = 'customint2';
 
     public function allow_unenrol(stdClass $instance) {
         return true;
@@ -113,10 +114,10 @@ class enrol_elis_plugin extends enrol_plugin {
         global $DB;
         if (!$DB->record_exists('enrol', array('courseid'=>$course->id, 'enrol'=>'elis'))) {
             // only add if no instance already exists
-            $this->add_instance($course,
-                                array('roleid' => $this->get_config('roleid', 0),
-                                      self::ENROL_FROM_COURSE_CATALOG_DB => $this->get_config(self::ENROL_FROM_COURSE_CATALOG_CONFIG, 1)
-                                    ));
+            $this->add_instance($course, array(
+                'roleid' => $this->get_config('roleid', 0),
+                self::ENROL_FROM_COURSE_CATALOG_DB => $this->get_config(self::ENROL_FROM_COURSE_CATALOG_CONFIG, 1),
+                self::UNENROL_FROM_COURSE_CATALOG_DB => $this->get_config(self::UNENROL_FROM_COURSE_CATALOG_CONFIG, 0)));
         }
     }
 
