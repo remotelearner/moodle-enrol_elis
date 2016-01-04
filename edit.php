@@ -1,7 +1,7 @@
 <?php
 /**
  * ELIS(TM): Enterprise Learning Intelligence Suite
- * Copyright (C) 2008-2014 Remote-Learner.net Inc (http://www.remote-learner.net)
+ * Copyright (C) 2008-2016 Remote-Learner.net Inc (http://www.remote-learner.net)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  * @package    enrol_elis
  * @author     Remote-Learner.net Inc
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @copyright  (C) 2008-2014 Remote-Learner.net Inc (http://www.remote-learner.net)
+ * @copyright  (C) 2008-2016 Remote-Learner.net Inc (http://www.remote-learner.net)
  *
  */
 
@@ -80,6 +80,7 @@ if ($mform->is_cancelled()) {
 } else if ($data = $mform->get_data()) {
     if ($instance->id) {
         $instance->{enrol_elis_plugin::ENROL_FROM_COURSE_CATALOG_DB} = $data->{enrol_elis_plugin::ENROL_FROM_COURSE_CATALOG_DB};
+        $instance->{enrol_elis_plugin::UNENROL_FROM_COURSE_CATALOG_DB} = $data->{enrol_elis_plugin::UNENROL_FROM_COURSE_CATALOG_DB};
         $instance->roleid       = $data->roleid;
         $instance->timemodified = time();
         $DB->update_record('enrol', $instance);
@@ -87,6 +88,7 @@ if ($mform->is_cancelled()) {
     } else {
         $fields = array(
             enrol_elis_plugin::ENROL_FROM_COURSE_CATALOG_DB => $data->{enrol_elis_plugin::ENROL_FROM_COURSE_CATALOG_DB},
+            enrol_elis_plugin::UNENROL_FROM_COURSE_CATALOG_DB => $data->{enrol_elis_plugin::UNENROL_FROM_COURSE_CATALOG_DB},
             'roleid'=>$data->roleid,
         );
         $plugin->add_instance($course, $fields);
