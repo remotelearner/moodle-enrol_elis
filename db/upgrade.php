@@ -41,5 +41,25 @@ function xmldb_enrol_elis_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint($result, '2015010401', 'enrol', 'elis');
     }
 
+    if ($result && $oldversion < 2015010402) {
+        $sql = "SELECT DISTINCT e1.courseid
+                  FROM mdl_enrol e1
+                 WHERE e1.enrol = 'elis'
+                       AND EXISTS (SELECT *
+                                     FROM mdl_enrol e2
+                                    WHERE e2.enrol = 'elis'
+                                          AND e1.courseid = e2.courseid
+                                          AND e1.id != e2.id)";
+        $reqfixes = $DB->get_recordset_sql($sql);
+        if ($reqfixes && $reqfixes->valid()) {
+            $plugin = enrol_get_plugin('elis');
+            foreach ($reqfixes as $reqfix) {
+                $plugin->get_or_create_instance($DB->get_record('course', ['id' => $reqfix->courseid]));
+            }
+        }
+        unset($reqfixes);
+        upgrade_plugin_savepoint($result, '2015010402', 'enrol', 'elis');
+    }
+
     return $result;
 }
