@@ -139,12 +139,35 @@ class enrol_elis_plugin extends enrol_plugin {
      */
     public function get_or_create_instance($course) {
         global $DB;
-        $enrol = $DB->get_record('enrol', array('courseid'=>$course->id, 'enrol'=>'elis'));
-        if ($enrol) {
-            return $enrol;
+        $enrols = $DB->get_records('enrol', ['courseid' => $course->id, 'enrol' => 'elis']);
+        if ($enrols && count($enrols) > 1) {
+            // Repair multiple enrolment instances in Moodle course.
+            list($insql, $inparams) = $DB->get_in_or_equal(array_keys($enrols));
+            $sql = "SELECT ue.enrolid, COUNT(ue.enrolid) AS ecount
+                      FROM {user_enrolments} ue
+                     WHERE ue.enrolid {$insql}
+                  ORDER BY ecount DESC";
+            $ues = $DB->get_records_sql($sql, $inparams, 0, 2);
+            if ($ues && count($ues) && ($maxenrolid = key($ues))) {
+                $maxenrolinst = $enrols[$maxenrolid];
+            } else {
+                // No enrolments for any plugin instances?
+                $maxenrolinst = current($enrols);
+                $maxenrolid = $maxenrolinst->id;
+            }
+            unset($enrols[$maxenrolid]);
+            list($insql, $inparams) = $DB->get_in_or_equal(array_keys($enrols));
+            $sql = "UPDATE {user_enrolments}
+                       SET enrolid = ?
+                     WHERE enrolid {$insql}";
+            $DB->execute($sql, array_merge([$maxenrolid], $inparams));
+            $DB->delete_records_select('enrol', "id {$insql}", $inparams);
+            return $maxenrolinst;
+        } else if ($enrols && count($enrols) == 1) {
+            return current($enrols);
         }
         $this->add_default_instance($course);
-        $enrol = $DB->get_record('enrol', array('courseid'=>$course->id, 'enrol'=>'elis'));
+        $enrol = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'elis']);
         return $enrol;
     }
 }
