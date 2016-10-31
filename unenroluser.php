@@ -47,7 +47,7 @@ $sql = "SELECT c.* $ctxsql
          WHERE e.id = :enrolid";
 $params = array('enrolid' => $ue->enrolid, 'contextlevel' => CONTEXT_COURSE);
 $course = $DB->get_record_sql($sql, $params, MUST_EXIST);
-context_instance_preload($course);
+\context_helper::preload_from_record($course);
 
 if ($course->id == SITEID) {
     redirect(new moodle_url('/'));
